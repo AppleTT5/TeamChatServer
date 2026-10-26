@@ -1,28 +1,34 @@
+#include <QtCore/QCborArray>
 #include "sm_chanel_history.h"
 
-#include <QtCore>
+using namespace Qt::Literals::StringLiterals;
 
-QT_USE_NAMESPACE;
-using namespace  Qt::Literals::StringLiterals;
-
-chanel_history_message::chanel_history_message(s_ChanelHistory data)
+chanel_history_message::chanel_history_message(const s_ChanelHistory& data)
+    : system_message(SystemMessageType::ChanelHistory)
 {
-	this->sys_type = SystemMessageType::ChanelHistory;
-	QCborMap map;
-	map.insert("type"_L1, this->type);
-	map.insert("v_api"_L1, this->version_api);
-	map.insert("sys_type"_L1, this->sys_type);
-	map.insert("chanel_id"_L1, data.chanel_id);
-	QCborArray cborArray;
-	for (user_message tci : data.messages) {
-		QCborMap t_map;
-		t_map.insert("type"_L1, tci.type);
-	    t_map.insert("name"_L1, tci.name);
-		t_map.insert("text"_L1, tci.text);
-		cborArray.append(t_map);
-	}
+    this->data = data;
+}
 
-	map.insert("messages"_L1, cborArray);
-	QByteArray binaryData = QCborValue(map).toCbor();
-	this->bytes = binaryData;
+QByteArray chanel_history_message::toCbor() const
+{
+    QCborMap map = sysBaseMap();
+    map.insert("chanel_id"_L1, qint64(this->data.chanel_id));
+
+    QCborArray messages;
+    for (const user_message& um : this->data.messages) {
+        QCborMap m;
+        m.insert("type"_L1, int(MessageType::UserMessage));
+        m.insert("name"_L1, um.data.NikName);
+        m.insert("text"_L1, um.data.text);
+        m.insert("ts"_L1, um.data.timestamp);
+        if (um.hasFile()) {
+            m.insert("file_name"_L1, um.data.fileName);
+            m.insert("file_size"_L1, qint64(um.data.fileData.size()));
+            m.insert("file_data"_L1, QCborValue(um.data.fileData));
+        }
+        messages.append(m);
+    }
+
+    map.insert("messages"_L1, messages);
+    return QCborValue(map).toCbor();
 }

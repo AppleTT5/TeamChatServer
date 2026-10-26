@@ -1,59 +1,53 @@
 #include "user_message.h"
-#include <QtCore>
-#include <QtCore/QByteArray>
-#include <QtCore/QString>
-#include <QtCore/QStringLiteral>
 
-using namespace std;
+#include <QtCore/QCborParserError>
+
 using namespace Qt::Literals::StringLiterals;
-QT_USE_NAMESPACE
 
-user_message::user_message(type_input_data type , QByteArray bytes , user_message_data  message_data ) {
-	this->type = MessageType::UserMessage;
-	this->version_api = "1.0.0.0";
+user_message::user_message(const QByteArray& bytes)
+{
+    this->type = MessageType::UserMessage;
+    this->version_api = QString::fromLatin1(API_VERSION);
 
-	switch (type)
-	{	
-	case user_message::none:
-		break;
-	case user_message::file:
-		this->bytes = bytes;
-		this->data =  this->Read();
-		break;
-	case user_message::structure:
-		this->name = message_data.NikName;
-		this->channel = message_data.channel;
-		this->text = message_data.text;
-		this->Write();
-		break;
-	}
+    QCborMap map;
+    if (!bytesToMap(bytes, map))
+        return; // data.rightStructure остаётся false
 
+    this->version_api      = map.value("v_api"_L1).toString(this->version_api);
+    this->data.rightStructure = true;
+    this->data.NikName     = map.value("name"_L1).toString();
+    this->data.channel     = quint64(qMax<qint64>(0, map.value("chanel"_L1).toInteger()));
+    this->data.text        = map.value("text"_L1).toString();
+    this->data.fileName    = map.value("file_name"_L1).toString();
+    this->data.fileData    = map.value("file_data"_L1).toByteArray();
+    this->data.timestamp   = map.value("ts"_L1).toInteger();
 }
 
-QByteArray user_message::Write()
+user_message::user_message(const QString& nick, quint64 channel, const QString& text,
+                           const QString& fileName, const QByteArray& fileData)
 {
-	QCborMap map;
-	map.insert("type"_L1, this->type);
-	map.insert("v_api"_L1, this->version_api);
-	map.insert("name"_L1, this->name);
-	map.insert("chanel"_L1, this->channel);
-	map.insert("text"_L1, this->text);
-	QByteArray binaryData = QCborValue(map).toCbor();
-	return binaryData;
-
+    this->type = MessageType::UserMessage;
+    this->version_api = QString::fromLatin1(API_VERSION);
+    this->data.rightStructure = true;
+    this->data.NikName  = nick;
+    this->data.channel  = channel;
+    this->data.text     = text;
+    this->data.fileName = fileName;
+    this->data.fileData = fileData;
 }
 
-user_message_data user_message::Read() 
+QByteArray user_message::toCbor() const
 {
-	QCborValue cborValue = QCborValue::fromCbor(this->bytes);
-	if (!cborValue.isMap()) return user_message_data{ false,NULL, NULL, NULL };
-	QCborMap map = cborValue.toMap();
-	int type_int = map.value("type"_L1).toInteger();
-	MessageType type = MessageType(type_int);
-	if (type != MessageType::UserMessage)return user_message_data{ false,NULL, NULL, NULL };
-	QString v_api = map.value("v_api"_L1).toString();
-	QString name = map.value("name"_L1).toString();
-	int chanel = map.value("chanel"_L1).toInteger();
-	QString text = map.value("text"_L1).toString();
-	return user_message_data{ true,name,chanel,text };
+    QCborMap map = baseMap();
+    map.insert("name"_L1, this->data.NikName);
+    map.insert("chanel"_L1, qint64(this->data.channel));
+    map.insert("text"_L1, this->data.text);
+    map.insert("ts"_L1, this->data.timestamp);
+
+    if (!this->data.fileName.isEmpty() || !this->data.fileData.isEmpty()) {
+        map.insert("file_name"_L1, this->data.fileName);
+        map.insert("file_data"_L1, QCborValue(this->data.fileData));
+    }
+
+    return QCborValue(map).toCbor();
 }

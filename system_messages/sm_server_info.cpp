@@ -1,20 +1,17 @@
 #include "sm_server_info.h"
 
-#include <QtCore/QByteArray>
+using namespace Qt::Literals::StringLiterals;
 
-
-QT_USE_NAMESPACE;
-using namespace  Qt::Literals::StringLiterals;
-
-server_info_message::server_info_message(s_ServerInfo data)
+server_info_message::server_info_message(const s_ServerInfo& data)
+    : system_message(SystemMessageType::ServerInfo)
 {
-	sys_type = SystemMessageType::ServerInfo;
-	QCborMap map;
-	map.insert("type"_L1, this->type);
-	map.insert("v_api"_L1, this->version_api);
-	map.insert("sys_type"_L1, this->sys_type);
-	map.insert("name"_L1, data.Name);
-	map.insert("description"_L1,data.Description );
-	QByteArray binaryData = QCborValue(map).toCbor();
-	this->bytes = binaryData;
+    this->data = data;
+}
+
+QByteArray server_info_message::toCbor() const
+{
+    QCborMap map = sysBaseMap();
+    map.insert("name"_L1, this->data.Name);
+    map.insert("description"_L1, this->data.Description);
+    return QCborValue(map).toCbor();
 }
