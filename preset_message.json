@@ -1,0 +1,19 @@
+{
+    "type": "UserMessage",
+    "name": "AppleTT",
+    "chanel": "3",
+    "text": "Heelll"
+},
+
+{
+    "type": "ServerMessage",
+    "text": "User Connected"
+},
+
+{
+    "type": "SysteamMessage",
+    "server_name": "New Server",
+    "server_description":"Server ��� ���",
+    ""
+
+}

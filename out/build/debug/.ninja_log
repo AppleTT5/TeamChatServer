@@ -1,0 +1,15 @@
+# ninja log v6
+213	560	8068764563909122	TeamChatServer_autogen/timestamp	a48221ed703bc5b8
+213	560	8068764563909122	TeamChatServer_autogen/mocs_compilation.cpp	a48221ed703bc5b8
+514	5531	8052189925632590	CMakeFiles/TeamChatServer.dir/message.cpp.obj	631e3e91779b2baf
+213	560	8068764563909122	C:/Utility/Project/my_works/TeamChatServer/out/build/debug/TeamChatServer_autogen/timestamp	a48221ed703bc5b8
+213	560	8068764563909122	C:/Utility/Project/my_works/TeamChatServer/out/build/debug/TeamChatServer_autogen/mocs_compilation.cpp	a48221ed703bc5b8
+505	3343	8052189925532592	CMakeFiles/TeamChatServer.dir/TeamChatServer_autogen/mocs_compilation.cpp.obj	d82c0e3baca88a17
+508	3355	8052189925562589	CMakeFiles/TeamChatServer.dir/main.cpp.obj	31c4dc985be93f59
+283	3368	8051310657701584	CMakeFiles/TeamChatServer.dir/ChatServer.cpp.obj	e4f4a18042cb21f
+3370	3565	8051310688585707	TeamChatServer.exe	be468dd7c7cfdcf8
+526	3348	8052189925752592	CMakeFiles/TeamChatServer.dir/system_message.cpp.obj	10a5d39441d81771
+521	3361	8052189925702598	CMakeFiles/TeamChatServer.dir/text_chanel.cpp.obj	159666df95126673
+541	5417	8052189925902590	CMakeFiles/TeamChatServer.dir/system_messages/sm_chanel_history.cpp.obj	57d1e1bf8148f1cd
+530	5523	8052189925792596	CMakeFiles/TeamChatServer.dir/system_messages/sm_server_info.cpp.obj	137859d7a37602c
+535	5539	8052189925842599	CMakeFiles/TeamChatServer.dir/system_messages/sm_chanels_info.cpp.obj	e5d393c336822225

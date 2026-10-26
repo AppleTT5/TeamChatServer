@@ -1,0 +1,5 @@
+C:/Utility/Project/my_works/TeamChatServer/out/build/release/CMakeFiles/TeamChatServer.dir
+C:/Utility/Project/my_works/TeamChatServer/out/build/release/CMakeFiles/edit_cache.dir
+C:/Utility/Project/my_works/TeamChatServer/out/build/release/CMakeFiles/rebuild_cache.dir
+C:/Utility/Project/my_works/TeamChatServer/out/build/release/CMakeFiles/TeamChatServer_autogen_timestamp_deps.dir
+C:/Utility/Project/my_works/TeamChatServer/out/build/release/CMakeFiles/TeamChatServer_autogen.dir

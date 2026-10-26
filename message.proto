@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option optimize_for = LITE_RUNTIME; 
+
+// Описываем типы пакетов
+enum EventType {
+  UNKNOWN = 0;
+  USER_MESSAGE = 1;
+  SERVER_MESSAGE = 2;
+  SERVER_INFO = 3;
+}
+
+// Структура нашего единого сетевого пакета
+message UserPacket {
+  string channel_id = 1;
+  string user_name = 2;
+  
+  string text_content = 3;
+  bytes binary_content = 4;
+}
+
+
+message ServerPacket {
+  string channel_id = 1;
+  string text_content = 2;
+  bytes binary_content = 3; 
+}
+
+message ServerInfo {
+    string name =1 ;
+    string description =2;
+    repeated Channel channels  =3;
+    
+}
+
+message Channel{
+    uint32 id =1 ;
+    string name = 2;
+}
+
+message Packet {
+  string room_id = 1;
+  EventType type = 2;
+
+  oneof payload {
+    UserPacket up = 3;
+    ServerPacket sp  = 4;
+    ServerInfo si = 5;
+    
+  }
+}
